@@ -1,82 +1,89 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class HistoryContent extends StatelessWidget {
-  const HistoryContent({super.key});
+class HistoryContent extends StatefulWidget {
+  const HistoryContent({Key? key}) : super(key: key);
 
-  Future<bool?> showConfirmationDialog(
-      BuildContext context, String message) async {
-    return await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'Konfirmasi Hapus',
-            style: TextStyle(
-              fontFamily: 'SF-Pro',
-              fontWeight: FontWeight.w700,
-              letterSpacing: -1,
-              fontSize: 24,
-              color: Color.fromRGBO(8, 4, 22, 1),
-            ),
-          ),
-          content: Text(
-            message,
-            style: TextStyle(
-              fontFamily: 'SF-Pro',
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
-              color: Color.fromRGBO(88, 107, 132, 1),
-            ),
-          ),
-          actions: [
-            TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: Color.fromRGBO(8, 4, 22, 1),
-                backgroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 20,
-                ),
-              ),
-              child: const Text(
-                'Batal',
-                style: TextStyle(
-                  fontFamily: 'SF-Pro',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  color: Color.fromRGBO(8, 4, 22, 1),
-                ),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Color.fromRGBO(72, 22, 236, 1),
-                padding: EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 20,
-                ),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: const Text(
-                'Ya, hapus',
-                style: TextStyle(
-                  fontFamily: 'SF-Pro',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
+  @override
+  _HistoryContentState createState() => _HistoryContentState();
+}
+
+class _HistoryContentState extends State<HistoryContent> {
+  List<dynamic> historyData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
   }
+
+  Future<void> fetchData() async {
+    final String apiUrl = 'http://reading_history/fetch_history/';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final decodedData = json.decode(response.body);
+        setState(() {
+          historyData = decodedData['history'];
+        });
+      } else {
+        print('Failed to fetch data');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
+
+  Future<void> editPageNumber(int bookId, int newPageNumber) async {
+  final String apiUrl = 'http://reading_history/edit_page_number/';
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      body: json.encode({
+        'bookId': bookId,
+        'newPageNumber': newPageNumber,
+      }),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 201) {
+      showSuccessNotification(context);
+      fetchData(); // Mengambil data terbaru setelah edit
+    } else {
+      print('Failed to edit page number');
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+}
+
+Future<void> deleteBook(int bookId) async {
+  final String apiUrl = 'http://reading_history/delete_history_entry/';
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      body: json.encode({
+        'bookId': bookId,
+      }),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 201) {
+      showSuccessNotification(context);
+      fetchData(); // Mengambil data terbaru setelah hapus
+    } else {
+      print('Failed to delete book');
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+}
+
 
   void showSuccessNotification(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -89,8 +96,6 @@ class HistoryContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        alignment: Alignment.topLeft,
-        padding: const EdgeInsets.all(40),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -125,8 +130,8 @@ class HistoryContent extends StatelessWidget {
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
+              children: historyData.map((entry) {
+                return Container(
                   padding: EdgeInsets.all(12),
                   width: MediaQuery.of(context).size.width,
                   alignment: Alignment.topLeft,
@@ -139,8 +144,10 @@ class HistoryContent extends StatelessWidget {
                     children: [
                       Container(
                         margin: EdgeInsets.only(right: 12),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 12,
+                        ),
                         decoration: BoxDecoration(
                           color: Color.fromRGBO(80, 166, 255, 1),
                           borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -244,7 +251,7 @@ class HistoryContent extends StatelessWidget {
                                                         92,
                                                         66,
                                                         255,
-                                                        1), // Change to your desired blue color
+                                                        1),
                                                   ),
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -256,8 +263,6 @@ class HistoryContent extends StatelessWidget {
                                                         vertical: 12),
                                               ),
                                             ),
-                                          ),
-                                          SizedBox(
                                             height: 16,
                                           )
                                         ],
@@ -316,7 +321,9 @@ class HistoryContent extends StatelessWidget {
                               );
 
                               if (result != null && result) {
-                                // Save logic
+                                // Panggil fungsi untuk mengatur nomor halaman di backend
+                                editPageNumber(
+                                    entry['book_id'], int.parse(result.toString()));
                               }
                             },
                             child: Image.asset(
@@ -329,14 +336,8 @@ class HistoryContent extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              bool? result = await showConfirmationDialog(
-                                context,
-                                "Apakah Anda yakin ingin menghapus?",
-                              );
-
-                              if (result != null && result) {
-                                showSuccessNotification(context);
-                              }
+                              // Panggil fungsi untuk menghapus buku di backend
+                              deleteBook(entry['book_id']);
                             },
                             child: Image.asset(
                               "assets/history/delete.png",
@@ -347,8 +348,8 @@ class HistoryContent extends StatelessWidget {
                       )
                     ],
                   ),
-                ),
-              ],
+                );
+              }).toList(),
             )
           ],
         ),
