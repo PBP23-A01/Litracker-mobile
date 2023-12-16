@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:litracker_mobile/pages/auth/loginPage.dart';
 import 'package:litracker_mobile/data/models/user.dart';
@@ -63,7 +65,7 @@ class _ProfileContentState extends State<ProfileContent> {
             child: Image.asset("assets/profile/profile-bg.png"),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Column(
               children: [
                 const SizedBox(
@@ -131,14 +133,14 @@ class _ProfileContentState extends State<ProfileContent> {
                                 ),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 8,
                             ),
                             Text(
                               loggedInUser?.username ?? "Default Username",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: 'SF-Pro',
                                 fontWeight: FontWeight.w600,
                                 color: Color.fromRGBO(8, 4, 22, 1),
@@ -152,11 +154,12 @@ class _ProfileContentState extends State<ProfileContent> {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(40),
@@ -168,12 +171,12 @@ class _ProfileContentState extends State<ProfileContent> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => UpVoteList(),
+                              builder: (context) => const UpVoteList(),
                             ),
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: const Color.fromRGBO(246, 247, 249, 1),
                             borderRadius: BorderRadius.circular(24),
@@ -187,7 +190,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                 children: [
                                   Image.asset(
                                       'assets/profile/profile-upvote.png'),
-                                  SizedBox(width: 16),
+                                  const SizedBox(width: 16),
                                   Container(
                                     width:
                                         MediaQuery.of(context).size.width - 240,
@@ -202,7 +205,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                               .toString(), // Display total votes here
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontFamily: 'SF-Pro',
                                             fontWeight: FontWeight.w800,
                                             letterSpacing: -0.5,
@@ -210,8 +213,8 @@ class _ProfileContentState extends State<ProfileContent> {
                                             fontSize: 16,
                                           ),
                                         ),
-                                        SizedBox(height: 8),
-                                        Text(
+                                        const SizedBox(height: 8),
+                                        const Text(
                                           "Buku Kamu Upvote",
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
@@ -235,18 +238,18 @@ class _ProfileContentState extends State<ProfileContent> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => WishlistList(),
+                              builder: (context) => const WishlistList(),
                             ),
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: const Color.fromRGBO(246, 247, 249, 1),
                             borderRadius: BorderRadius.circular(24),
@@ -260,7 +263,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                 children: [
                                   Image.asset(
                                       'assets/profile/profile-wishlist.png'),
-                                  SizedBox(width: 16),
+                                  const SizedBox(width: 16),
                                   Container(
                                     width:
                                         MediaQuery.of(context).size.width - 240,
@@ -275,7 +278,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                               .toString(), // Display total wishlist here
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontFamily: 'SF-Pro',
                                             fontWeight: FontWeight.w800,
                                             letterSpacing: -0.5,
@@ -283,8 +286,8 @@ class _ProfileContentState extends State<ProfileContent> {
                                             fontSize: 16,
                                           ),
                                         ),
-                                        SizedBox(height: 8),
-                                        Text(
+                                        const SizedBox(height: 8),
+                                        const Text(
                                           "Buku di Wishlistmu",
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
@@ -311,7 +314,7 @@ class _ProfileContentState extends State<ProfileContent> {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 24,
                 ),
                 Row(
@@ -339,7 +342,7 @@ class _ProfileContentState extends State<ProfileContent> {
                         }
                       },
                       child: Container(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           vertical: 12,
                           horizontal: 22,
                         ),
@@ -350,14 +353,14 @@ class _ProfileContentState extends State<ProfileContent> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: Color.fromRGBO(236, 239, 242, 1),
+                            color: const Color.fromRGBO(236, 239, 242, 1),
                             width: 2,
                           ),
                         ),
                         child: Row(
                           children: [
                             RichText(
-                              text: TextSpan(
+                              text: const TextSpan(
                                 text: "Logout",
                                 style: TextStyle(
                                   color: Color.fromRGBO(8, 4, 22, 1),
@@ -367,7 +370,7 @@ class _ProfileContentState extends State<ProfileContent> {
                                 ),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 16,
                             ),
                             Image.asset('assets/profile/profile-logout.png'),

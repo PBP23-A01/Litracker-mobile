@@ -234,9 +234,9 @@ class _AllBooks extends State<AllBooks> {
                                               borderRadius: BorderRadius.circular(
                                                   8.0), // Sesuaikan nilai sesuai kebutuhan Anda
                                               child: Image.network(
-                                                book.fields.imageUrlL
-                                                    .replaceFirst(
-                                                        "http://", "https://"),
+                                                book.fields.imageUrlL.replaceFirst(
+                                                    "http://images.amazon.com/",
+                                                    "https://m.media-amazon.com/"),
                                                 width: 50,
                                                 height: 60,
                                                 fit: BoxFit.cover,

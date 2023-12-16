@@ -1,25 +1,26 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:litracker_mobile/pages/user/utils/color_choice.dart';
 import 'package:litracker_mobile/reading_history/screens/last_page_form.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 import '../models/book.dart';
 
-class BookDetailPage extends StatelessWidget {
+class BookDetailPage extends StatefulWidget {
   final Book book;
 
-  final kashmirBlue50 = Color.fromRGBO(246, 247, 249, 1);
-  final kashmirBlue100 = Color.fromRGBO(236, 239, 242, 1);
-  final kashmirBlue300 = Color.fromRGBO(176, 187, 201, 1);
-  final kashmirBlue500 = Color.fromRGBO(101, 122, 146, 1);
-  final kashmirBlue600 = Color.fromRGBO(88, 107, 132, 1);
-  final kashmirBlue950 = Color.fromRGBO(34, 39, 47, 1);
-  final jaguar100 = Color.fromRGBO(217, 221, 255, 1);
-  final jaguar400 = Color.fromRGBO(110, 101, 255, 1);
-  final jaguar500 = Color.fromRGBO(92, 66, 255, 1);
-  final jaguar600 = Color.fromRGBO(81, 33, 255, 1);
-  final jaguar700 = Color.fromRGBO(72, 22, 236, 1);
-  final jaguar950 = Color.fromRGBO(8, 4, 22, 1);
+  BookDetailPage({required this.book});
 
+  @override
+  State<BookDetailPage> createState() => _BookDetailPageState();
+}
+
+class _BookDetailPageState extends State<BookDetailPage> {
+  bool isVoted = false;
+  int total = 0;
   // Paling atas untuk upvote
   Widget totalUpvoteStyle() {
     return Container(
@@ -43,7 +44,7 @@ class BookDetailPage extends StatelessWidget {
             width: 8,
           ),
           Text(
-            "1604 upvote buku ini",
+            "$total upvote buku ini",
             style: TextStyle(
                 fontFamily: 'SF-Pro',
                 letterSpacing: -0.7,
@@ -65,7 +66,8 @@ class BookDetailPage extends StatelessWidget {
             topRight: Radius.circular(12),
             bottomRight: Radius.circular(12)),
         child: Image.network(
-          book.fields.imageUrlL,
+          widget.book.fields.imageUrlL.replaceFirst(
+              "http://images.amazon.com/", "https://m.media-amazon.com/"),
           width: 184,
           height: 232,
           fit: BoxFit.cover,
@@ -75,20 +77,6 @@ class BookDetailPage extends StatelessWidget {
   }
 
   // Shadow buku
-  // Widget shadowBookEffect() {
-  //   return BoxDecoration(
-  //     boxShadow: [
-  //       BoxShadow(
-  //         color: Colors.black.withOpacity(0.5),
-  //         spreadRadius: 0,
-  //         blurRadius: 10,
-  //         offset: Offset(4, 4), // Offset(x, y)
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // Style tahun buku
   Widget year() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -97,7 +85,7 @@ class BookDetailPage extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
       child: Text(
-        book.fields.publishedYear.toString(),
+        widget.book.fields.publishedYear.toString(),
         textAlign: TextAlign.center,
         style: TextStyle(
             fontFamily: 'SF-Pro',
@@ -118,22 +106,12 @@ class BookDetailPage extends StatelessWidget {
     ));
   }
 
-  // Atur add to wishlist
-  Widget userUpvotingBook() {
-    return Container(
-        child: Image.asset(
-      "assets/home/upvote_blank.png",
-      width: 36,
-      height: 36,
-    ));
-  }
-
   // Judul buku
   Widget titleBook() {
     return Container(
       alignment: Alignment.centerLeft,
       child: Text(
-        book.fields.title,
+        widget.book.fields.title,
         style: TextStyle(
             fontFamily: 'SF-Pro',
             fontWeight: FontWeight.w900,
@@ -148,7 +126,7 @@ class BookDetailPage extends StatelessWidget {
     return Container(
       alignment: Alignment.centerLeft,
       child: Text(
-        book.fields.author,
+        widget.book.fields.author,
         style: TextStyle(
             fontFamily: 'SF-Pro',
             fontWeight: FontWeight.w700,
@@ -182,7 +160,7 @@ class BookDetailPage extends StatelessWidget {
           ),
           Container(
             child: Text(
-              book.fields.isbn,
+              widget.book.fields.isbn,
               style: TextStyle(
                   fontFamily: 'SF-Pro',
                   fontSize: 12,
@@ -207,6 +185,7 @@ class BookDetailPage extends StatelessWidget {
   }
 
   // Has read book -> input number of page
+  bool isRead = false;
   Widget readingHistory(theWidth) {
     return Container(
       width: theWidth,
@@ -226,10 +205,9 @@ class BookDetailPage extends StatelessWidget {
     );
   }
 
-  BookDetailPage({required this.book});
-
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
@@ -298,7 +276,42 @@ class BookDetailPage extends StatelessWidget {
                                     SizedBox(
                                       width: 12,
                                     ),
-                                    userUpvotingBook()
+                                    GestureDetector(
+                                      // Inside the onTap method for upvote
+                                      // Inside the onTap method for upvote
+                                      onTap: () async {
+                                        final response = await request.post(
+                                            "http://localhost:8080/upvote_book/toggle_upvote_flutter/${widget.book.pk}/",
+                                            {});
+
+                                        // Check if the book is upvoted or unvoted
+
+                                        String message = response['message'];
+                                        int total_votes =
+                                            response['total_votes'];
+                                        if (message == 'Upvoted' ||
+                                            message == 'Unvoted') {
+                                          setState(() {
+                                            if (message == 'Upvoted') {
+                                              isVoted = true;
+                                              total = total_votes;
+                                            } else {
+                                              isVoted = false;
+                                              total = total_votes;
+                                            }
+                                          });
+                                        }
+                                      },
+
+                                      child: Container(
+                                          child: Image.asset(
+                                        isVoted
+                                            ? "assets/home/upvote_fill.png"
+                                            : "assets/home/upvote_blank.png",
+                                        width: 36,
+                                        height: 36,
+                                      )),
+                                    )
                                   ],
                                 ),
                               ],

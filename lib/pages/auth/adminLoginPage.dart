@@ -3,7 +3,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:litracker_mobile/pages/admin/home.dart';
+import 'package:litracker_mobile/pages/admin/admin_home.dart';
 import 'package:litracker_mobile/pages/auth/registPage.dart';
 import 'package:litracker_mobile/data/models/user.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';

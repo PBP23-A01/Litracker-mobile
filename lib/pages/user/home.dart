@@ -375,7 +375,8 @@ class _HomeContentState extends State<HomeContent>
                                             8.0), // Sesuaikan nilai sesuai kebutuhan Anda
                                         child: Image.network(
                                           book.fields.imageUrlL.replaceFirst(
-                                              "http://", "https://"),
+                                              "http://images.amazon.com/",
+                                              "https://m.media-amazon.com/"),
                                           width: 50,
                                           height: 60,
                                           fit: BoxFit.cover,
