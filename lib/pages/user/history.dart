@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
-class HistoryContent extends StatelessWidget {
+class HistoryContent extends StatefulWidget {
   const HistoryContent({super.key});
+
+    @override
+  State<HistoryContent> createState() => _HistoryContentState();
+}
+
+class _HistoryContentState extends State<HistoryContent>{
 
   Future<bool?> showConfirmationDialog(
       BuildContext context, String message) async {

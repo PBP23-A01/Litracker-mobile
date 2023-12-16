@@ -13,7 +13,7 @@ class HistoryContent extends StatefulWidget {
 }
 
 class _HistoryContentState extends State<HistoryContent> {
-Future<List<Product>> fetchProduct() async {
+Future<List<HistoryBook>> fetchHistoryBook() async {
     // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
     var url = Uri.parse(
         'http://127.0.0.1:8000/reading_history/fetch_history/');
@@ -25,26 +25,26 @@ Future<List<Product>> fetchProduct() async {
     // melakukan decode response menjadi bentuk json
     var data = jsonDecode(utf8.decode(response.bodyBytes));
 
-    // melakukan konversi data json menjadi object Product
-    List<Product> list_product = [];
+    // melakukan konversi data json menjadi object HistoryBook
+    List<HistoryBook> list_HistoryBook = [];
     for (var d in data) {
         if (d != null) {
-            list_product.add(Product.fromJson(d));
+            list_HistoryBook.add(HistoryBook.fromJson(d));
         }
     }
     
-    return list_product;
+    return list_HistoryBook;
 }
 
 @override
 Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: const Text('Product'),
+        title: const Text('HistoryBook'),
         ),
         drawer: const NavigateUser(),
         body: FutureBuilder(
-            future: fetchProduct(),
+            future: fetchHistoryBook(),
             builder: (context, AsyncSnapshot snapshot) {
                 if (snapshot.data == null) {
                     return const Center(child: CircularProgressIndicator());

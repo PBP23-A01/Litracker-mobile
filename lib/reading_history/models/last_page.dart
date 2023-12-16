@@ -1,21 +1,21 @@
 // To parse this JSON data, do
 //
-//     final product = productFromJson(jsonString);
+//     final HistoryBook = HistoryBookFromJson(jsonString);
 
 import 'dart:convert';
 
-Product productFromJson(String str) => Product.fromJson(json.decode(str));
+HistoryBook HistoryBookFromJson(String str) => HistoryBook.fromJson(json.decode(str));
 
-String productToJson(Product data) => json.encode(data.toJson());
+String HistoryBookToJson(HistoryBook data) => json.encode(data.toJson());
 
-class Product {
+class HistoryBook {
     List<History> history;
 
-    Product({
+    HistoryBook({
         required this.history,
     });
 
-    factory Product.fromJson(Map<String, dynamic> json) => Product(
+    factory HistoryBook.fromJson(Map<String, dynamic> json) => HistoryBook(
         history: List<History>.from(json["history"].map((x) => History.fromJson(x))),
     );
 
