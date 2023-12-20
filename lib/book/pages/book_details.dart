@@ -35,8 +35,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
   Future<int> fetchTotalRating(bookID) async {
     final requestTotalUsers =
         Provider.of<CookieRequest>(context, listen: false);
-    final responseUsersVote = await requestTotalUsers
-        .get('https://litracker-a01-tk.pbp.cs.ui.ac.id/review_book/get_total_rating/${bookID}/');
+    final responseUsersVote = await requestTotalUsers.get(
+        'https://litracker-a01-tk.pbp.cs.ui.ac.id/review_book/get_total_rating/${bookID}/');
 
     return responseUsersVote['average_rating'];
   }
@@ -601,7 +601,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           final _formKey = GlobalKey<FormState>();
                           final _controller = TextEditingController();
 
-                          bool? result = await showDialog<bool?>(
+                          await showDialog<bool?>(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(

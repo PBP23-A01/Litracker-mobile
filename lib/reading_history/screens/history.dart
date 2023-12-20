@@ -1,4 +1,3 @@
-
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:litracker_mobile/data/models/user.dart';
@@ -22,8 +21,8 @@ class _HistoryContentState extends State<HistoryContent> {
   Future<List<ReadingHistory>> fetchReadingHistories() async {
     final requestReadingHistories =
         Provider.of<CookieRequest>(context, listen: false);
-    final responseReadingHistories = await requestReadingHistories
-        .get('https://litracker-a01-tk.pbp.cs.ui.ac.id/reading_history/get_all_reading_history/');
+    final responseReadingHistories = await requestReadingHistories.get(
+        'https://litracker-a01-tk.pbp.cs.ui.ac.id/reading_history/get_all_reading_history/');
 
     List<ReadingHistory> fetchedReadingHistories = [];
 
@@ -54,8 +53,7 @@ class _HistoryContentState extends State<HistoryContent> {
       'last_page': lastPage.toString(),
     };
 
-    var response =
-        await http.post(url, body: data);
+    var response = await http.post(url, body: data);
 
     if (response.statusCode == 200) {
       // Berhasil menyimpan, bisa menampilkan notifikasi atau melakukan tindakan lainnya
@@ -72,7 +70,7 @@ class _HistoryContentState extends State<HistoryContent> {
         'https://litracker-a01-tk.pbp.cs.ui.ac.id/reading_history/delete_reading_history/$bookId/';
 
     try {
-      final response = await cookieRequest.post(url, {});
+      await cookieRequest.post(url, {});
 
       // Reload the reading histories after successful deletion
       setState(() {});
